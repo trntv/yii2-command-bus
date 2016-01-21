@@ -21,7 +21,7 @@
     },
     "require-dev": {
         "yiisoft/yii2-dev": "^2.0",
-        "phpunit/phpunit": "^5.1",
+        "phpunit/phpunit": "^4.8",
         "predis/predis": "^1.0"
     },
     "autoload": {
