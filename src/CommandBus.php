@@ -61,8 +61,9 @@ class CommandBus extends Component
      */
     public function init()
     {
-        $this->queue = Instance::ensure($this->queue, 'yii\queue\QueueInterface');
-
+        if ($this->queue) {
+            $this->queue = Instance::ensure($this->queue, 'yii\queue\QueueInterface');
+        }
         parent::init();
     }
 
