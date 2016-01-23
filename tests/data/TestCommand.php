@@ -2,8 +2,8 @@
 
 namespace trntv\bus\tests\data;
 
-use trntv\bus\base\interfaces\SelfHandlingCommand;
-use trntv\bus\base\Command;
+use trntv\bus\interfaces\SelfHandlingCommand;
+use trntv\bus\Command;
 
 /**
  * Class TestCommand

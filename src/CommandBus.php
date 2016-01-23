@@ -3,12 +3,12 @@
 namespace trntv\bus;
 
 use Symfony\Component\Process\Process;
-use trntv\bus\base\interfaces\BackgroundCommand;
-use trntv\bus\base\interfaces\Command;
-use trntv\bus\base\interfaces\Handler;
-use trntv\bus\base\interfaces\Middleware;
-use trntv\bus\base\interfaces\QueuedCommand;
-use trntv\bus\base\interfaces\SelfHandlingCommand;
+use trntv\bus\interfaces\BackgroundCommand;
+use trntv\bus\interfaces\Command;
+use trntv\bus\interfaces\Handler;
+use trntv\bus\interfaces\Middleware;
+use trntv\bus\interfaces\QueuedCommand;
+use trntv\bus\interfaces\SelfHandlingCommand;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;

@@ -1,9 +1,9 @@
 <?php
 
-namespace trntv\bus\base;
+namespace trntv\bus;
 
 use yii\base\Object;
-use trntv\bus\base\interfaces\Command as CommandInterface;
+use trntv\bus\interfaces\Command as CommandInterface;
 
 /**
  * Class Command

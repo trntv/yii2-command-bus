@@ -1,8 +1,8 @@
 <?php
 
 namespace trntv\bus\tests\data;
-use trntv\bus\base\interfaces\Command;
-use trntv\bus\base\interfaces\Handler;
+use trntv\bus\interfaces\Command;
+use trntv\bus\interfaces\Handler;
 use yii\base\Object;
 
 

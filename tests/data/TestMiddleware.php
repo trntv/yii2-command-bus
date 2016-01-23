@@ -2,8 +2,8 @@
 
 namespace trntv\bus\tests\data;
 
-use trntv\bus\base\interfaces\Command;
-use trntv\bus\base\interfaces\Middleware;
+use trntv\bus\interfaces\Command;
+use trntv\bus\interfaces\Middleware;
 use yii\base\Object;
 
 

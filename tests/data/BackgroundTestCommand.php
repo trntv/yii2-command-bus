@@ -2,9 +2,9 @@
 
 namespace trntv\bus\tests\data;
 
-use trntv\bus\base\Command;
-use trntv\bus\base\interfaces\BackgroundCommand;
-use trntv\bus\base\interfaces\SelfHandlingCommand;
+use trntv\bus\Command;
+use trntv\bus\interfaces\BackgroundCommand;
+use trntv\bus\interfaces\SelfHandlingCommand;
 
 /**
  * Class BackgroundTestCommand

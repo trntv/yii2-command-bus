@@ -2,7 +2,7 @@
 
 namespace trntv\bus\console;
 
-use trntv\bus\base\interfaces\QueuedCommand;
+use trntv\bus\interfaces\QueuedCommand;
 use trntv\bus\CommandBus;
 use Yii;
 use yii\console\Controller;
