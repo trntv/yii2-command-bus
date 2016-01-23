@@ -1,5 +1,9 @@
 # Yii2 Command Bus
+
 Command Bus for Yii2
+
+[![Build Status](https://travis-ci.org/trntv/yii2-command-bus.svg?branch=master)](https://travis-ci.org/trntv/yii2-command-bus)
+
 
 ## What is Command Bus? 
 > The idea of a command bus is that you create command objects that represent what you want your application to do. 
