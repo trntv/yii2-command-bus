@@ -3,6 +3,7 @@
 namespace trntv\bus;
 
 use Symfony\Component\Process\Process;
+use trntv\bus\base\ClassNameLocator;
 use trntv\bus\base\interfaces\BackgroundCommand;
 use trntv\bus\base\interfaces\Command;
 use trntv\bus\base\interfaces\Handler;
@@ -46,7 +47,10 @@ class CommandBus extends Component
      * @var array
      */
     public $backgroundHandlerArguments = [];
-
+    /**
+     * @var \trntv\bus\base\interfaces\HandlerLocator
+     */
+    public $locator;
     /**
      * @var array HandlerInterface[]
      */
@@ -64,6 +68,14 @@ class CommandBus extends Component
         if ($this->queue) {
             $this->queue = Instance::ensure($this->queue, 'yii\queue\QueueInterface');
         }
+        if (!$this->locator) {
+            $this->locator = [
+                'class' => 'trntv\bus\base\ClassNameLocator',
+                'handlers' => $this->handlers
+            ];
+        }
+
+        $this->locator = Instance::ensure($this->locator, 'trntv\bus\base\interfaces\HandlerLocator');
         parent::init();
     }
 
@@ -120,19 +132,18 @@ class CommandBus extends Component
      */
     protected function createHandlerMiddleware(Command $command)
     {
-        $type = get_class($command);
-
         if ($command instanceof SelfHandlingCommand) {
             $handlerMiddleware = function ($command) {
                 return $command->handle();
             };
-        } elseif (array_key_exists($type, $this->handlers)) {
-            $handler = $this->handlers[$type];
+        } else {
+            $handler = $this->locator->locate($command);
+            if (!$handler) {
+                throw new MissingHandlerException('Handler not found');
+            }
             $handlerMiddleware = function ($command) use ($handler) {
                 return $handler->handle($command);
             };
-        } else {
-            throw new MissingHandlerException('Handler not found');
         }
 
         return $handlerMiddleware;
@@ -284,11 +295,18 @@ class CommandBus extends Component
         }
     }
 
+    /**
+     * @param Middleware $middleware
+     */
     public function addMiddleware(Middleware $middleware)
     {
         $this->middlewares[] = $middleware;
     }
 
+    /**
+     * @param Handler $handler
+     * @param $type
+     */
     public function addHandler(Handler $handler, $type)
     {
         $this->handlers[$type] = $handler;
