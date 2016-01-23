@@ -1,7 +1,7 @@
 <?php
 
 namespace trntv\bus\tests\data;
-use trntv\bus\base\Command;
+use trntv\bus\Command;
 
 
 /**

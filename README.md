@@ -1,5 +1,9 @@
 # Yii2 Command Bus
+
 Command Bus for Yii2
+
+[![Build Status](https://travis-ci.org/trntv/yii2-command-bus.svg?branch=master)](https://travis-ci.org/trntv/yii2-command-bus)
+
 
 ## What is Command Bus? 
 > The idea of a command bus is that you create command objects that represent what you want your application to do. 
@@ -17,14 +21,6 @@ Either run
 ```
 php composer.phar require --prefer-dist trntv/yii2-command-bus
 ```
-
-or add
-
-```
-"trntv/yii2-command-bus": "^1.0"
-```
-
-to the require section of your `composer.json` file.
 
 ## Setting Up
 
@@ -79,6 +75,7 @@ For example, queue using Redis
 
 ## Usage
 1. Create command that will be executed in background async mode
+
 ```php
 class ReportCommand extends Command implements BackgroundCommand, SelfHandlingCommand
 {
@@ -91,6 +88,7 @@ class ReportCommand extends Command implements BackgroundCommand, SelfHandlingCo
     }
 }
 ```
+
 2. Command Bus will handle the rest
 ```php
 Yii::$app->commandBus->handle(new ReportCommand([
