@@ -22,14 +22,6 @@ Either run
 php composer.phar require --prefer-dist trntv/yii2-command-bus
 ```
 
-or add
-
-```
-"trntv/yii2-command-bus": "^1.0"
-```
-
-to the require section of your `composer.json` file.
-
 ## Setting Up
 
 After the installation, first step is to set the command bus component.
