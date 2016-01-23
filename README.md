@@ -83,6 +83,7 @@ For example, queue using Redis
 
 ## Usage
 1. Create command that will be executed in background async mode
+
 ```php
 class ReportCommand extends Command implements BackgroundCommand, SelfHandlingCommand
 {
@@ -95,6 +96,7 @@ class ReportCommand extends Command implements BackgroundCommand, SelfHandlingCo
     }
 }
 ```
+
 2. Command Bus will handle the rest
 ```php
 Yii::$app->commandBus->handle(new ReportCommand([
