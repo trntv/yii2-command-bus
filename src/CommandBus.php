@@ -5,7 +5,7 @@ namespace trntv\bus;
 use Symfony\Component\Process\Process;
 use trntv\bus\interfaces\BackgroundCommand;
 use trntv\bus\interfaces\Command;
-use trntv\bus\interfaces\Handler;
+use trntv\bus\interfaces\HandlerLocator;
 use trntv\bus\interfaces\Middleware;
 use trntv\bus\interfaces\QueuedCommand;
 use trntv\bus\interfaces\SelfHandlingCommand;
@@ -14,7 +14,6 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
 use trntv\bus\exceptions\MissingHandlerException;
-
 
 /**
  * Class CommandBus
@@ -46,13 +45,12 @@ class CommandBus extends Component
      * @var array
      */
     public $backgroundHandlerArguments = [];
-
     /**
-     * @var array HandlerInterface[]
+     * @var HandlerLocator|null
      */
-    protected $handlers = [];
+    public $locator;
     /**
-     * @var array MiddlewareInterface[]
+     * @var Middleware[]
      */
     protected $middlewares = [];
 
@@ -63,6 +61,9 @@ class CommandBus extends Component
     {
         if ($this->queue) {
             $this->queue = Instance::ensure($this->queue, 'yii\queue\QueueInterface');
+        }
+        if ($this->locator) {
+            $this->locator = Instance::ensure($this->locator, 'trntv\bus\interfaces\HandlerLocator');
         }
         parent::init();
     }
@@ -93,49 +94,18 @@ class CommandBus extends Component
     }
 
     /**
-     * @param $command
-     * @param array $middlewareList
-     * @return \Closure
-     * @throws InvalidConfigException
+     * @param QueuedCommand $command
+     * @return mixed
      */
-    protected function createMiddlewareChain($command, array $middlewareList) {
-
-        $lastCallable = $this->createHandlerMiddleware($command);
-
-        while ($middleware = array_pop($middlewareList)) {
-            if (!$middleware instanceof Middleware) {
-                throw new InvalidConfigException;
-            }
-            $lastCallable = function ($command) use ($middleware, $lastCallable) {
-                return $middleware->execute($command, $lastCallable);
-            };
-        }
-        return $lastCallable;
-    }
-
-    /**
-     * @param Command $command
-     * @return \Closure
-     * @throws MissingHandlerException
-     */
-    protected function createHandlerMiddleware(Command $command)
+    public function handleInQueue(QueuedCommand $command)
     {
-        $type = get_class($command);
-
-        if ($command instanceof SelfHandlingCommand) {
-            $handlerMiddleware = function ($command) {
-                return $command->handle();
-            };
-        } elseif (array_key_exists($type, $this->handlers)) {
-            $handler = $this->handlers[$type];
-            $handlerMiddleware = function ($command) use ($handler) {
-                return $handler->handle($command);
-            };
-        } else {
-            throw new MissingHandlerException('Handler not found');
-        }
-
-        return $handlerMiddleware;
+        return $this->queue->push(
+            [
+                'serializer' => $this->serializer,
+                'object' => $this->serialize($command)
+            ],
+            $command->getQueueName()
+        );
     }
 
     /**
@@ -144,7 +114,7 @@ class CommandBus extends Component
      */
     protected function handleInBackground(BackgroundCommand $command)
     {
-        $binary = $this->getConsoleHandlerBinary();
+        $binary = $this->getBackgroundHandlerBinary();
         $path = $this->getBackgroundHandlerPath();
         $route = $this->getBackgroundHandlerRoute();
         $arguments = implode(' ', $this->getBackgroundHandlerArguments($command));
@@ -161,24 +131,9 @@ class CommandBus extends Component
     }
 
     /**
-     * @param QueuedCommand $command
-     * @return mixed
-     */
-    public function handleInQueue(QueuedCommand $command)
-    {
-        return $this->queue->push(
-            [
-                'serializer' => $this->serializer,
-                'object' => $this->serialize($command)
-            ],
-            $command->getQueueName()
-        );
-    }
-
-    /**
      * @return bool|string
      */
-    public function getConsoleHandlerBinary()
+    public function getBackgroundHandlerBinary()
     {
         $binary = $this->backgroundHandlerBinary ?: PHP_BINARY;
         return Yii::getAlias($binary);
@@ -216,15 +171,6 @@ class CommandBus extends Component
      * @param $command
      * @return mixed
      */
-    public function serialize($command)
-    {
-        return call_user_func($this->serializer[0], $command);
-    }
-
-    /**
-     * @param $command
-     * @return mixed
-     */
     public function unserialize($command)
     {
         return call_user_func($this->serializer[1], $command);
@@ -249,21 +195,59 @@ class CommandBus extends Component
     }
 
     /**
-     * @return array
+     * @param $command
+     * @param array $middlewareList
+     * @return \Closure
+     * @throws InvalidConfigException
      */
-    public function getHandlers()
-    {
-        return $this->handlers;
+    protected function createMiddlewareChain($command, array $middlewareList) {
+
+        $lastCallable = $this->createHandlerMiddleware($command);
+
+        while ($middleware = array_pop($middlewareList)) {
+            if (!$middleware instanceof Middleware) {
+                throw new InvalidConfigException;
+            }
+            $lastCallable = function ($command) use ($middleware, $lastCallable) {
+                return $middleware->execute($command, $lastCallable);
+            };
+        }
+        return $lastCallable;
     }
 
     /**
-     * @param array $handlers
+     * @param Command $command
+     * @return \Closure
+     * @throws MissingHandlerException
      */
-    public function setHandlers($handlers)
+    protected function createHandlerMiddleware(Command $command)
     {
-        foreach ($handlers as $k => $handler) {
-            $this->handlers[$k] = Instance::ensure($handler, Handler::class);
+        if ($command instanceof SelfHandlingCommand) {
+            $handlerMiddleware = function ($command) {
+                return $command->handle();
+            };
+        } else {
+            $handler = $this->locator->locate($command, $this);
+
+            if (!$handler) {
+                throw new MissingHandlerException('Handler not found');
+            }
+
+            $handlerMiddleware = function ($command) use ($handler) {
+                return $handler->handle($command);
+            };
         }
+
+        return $handlerMiddleware;
+    }
+
+    /**
+     * @param $command
+     * @return mixed
+     */
+    public function serialize($command)
+    {
+        return call_user_func($this->serializer[0], $command);
     }
 
     /**
@@ -284,13 +268,11 @@ class CommandBus extends Component
         }
     }
 
+    /**
+     * @param Middleware $middleware
+     */
     public function addMiddleware(Middleware $middleware)
     {
         $this->middlewares[] = $middleware;
-    }
-
-    public function addHandler(Handler $handler, $type)
-    {
-        $this->handlers[$type] = $handler;
     }
 }

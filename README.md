@@ -95,3 +95,28 @@ Yii::$app->commandBus->handle(new ReportCommand([
     'someImportantData' => [ // data // ]
 ]))
 ```
+
+## Handlers
+
+```php
+return [
+    // ...
+    'components' => [
+        'commandBus' => [
+            'class' => 'trntv\bus\CommandBus',
+            'locator' => [
+                'class' => 'trntv\bus\locators\ClassNameLocator',
+                'handlers' => [
+                    'app\commands\SomeCommand' => 'app\handlers\SomeHandler'
+                ]
+            ]
+        ]
+    ],
+];
+
+// or
+$handler = new SomeHandler;
+Yii::$app->commandBus->locator->addHandler($handler, 'app\commands\SomeCommand');
+// or
+Yii::$app->commandBus->locator->addHandler('app\handlers\SomeHandler', 'app\commands\SomeCommand');
+```

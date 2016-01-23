@@ -44,12 +44,10 @@ class CommandBusTest extends TestCase
 
     public function testHandler()
     {
-        $this->commandBus->addHandler(new TestHandler(), TestHandlerCommand::className());
+        $this->commandBus->locator->addHandler(new TestHandler(), TestHandlerCommand::className());
         $result = $this->commandBus->handle(new TestHandlerCommand([
             'param' => 'test ok'
         ]));
-
-        $this->commandBus->addHandler(new TestHandler(), TestHandlerCommand::className());
         $this->assertEquals('test ok', $result);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace trntv\bus\base\interfaces;
+namespace trntv\bus\interfaces;
 
 /**
  * Interface HandlerLocator

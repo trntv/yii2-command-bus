@@ -1,8 +1,10 @@
 <?php
 
-namespace trntv\bus\base;
-use trntv\bus\base\interfaces\Command;
-use trntv\bus\base\interfaces\HandlerLocator;
+namespace trntv\bus\locators;
+
+use trntv\bus\CommandBus;
+use trntv\bus\interfaces\Command;
+use trntv\bus\interfaces\HandlerLocator;
 use yii\base\Object;
 use yii\di\Instance;
 
@@ -25,7 +27,7 @@ class ChainedLocator extends Object implements HandlerLocator
     public function init()
     {
         foreach ($this->locators as $k => $config) {
-            $this->locators[$k] = Instance::ensure($config, 'trntv\bus\base\interfaces\HandlerLocator');
+            $this->locators[$k] = Instance::ensure($config, 'trntv\bus\interfaces\HandlerLocator');
         }
         parent::init();
     }
@@ -37,6 +39,7 @@ class ChainedLocator extends Object implements HandlerLocator
     public function locate(Command $command)
     {
         foreach ($this->locators as $locator) {
+            /** @var HandlerLocator $locator */
             $handler = $locator->locate($command);
             if ($handler) {
                 return $handler;

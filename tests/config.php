@@ -14,9 +14,7 @@ return [
     'components' => [
         'commandBus' => [
             'class' => 'trntv\bus\CommandBus',
-            'handlers' => [
-                ''
-            ],
+            'locator' => 'trntv\bus\locators\ClassNameLocator',
             'backgroundHandlerPath' => __DIR__ . '/yii.php',
             'backgroundHandlerRoute' => 'bus/handle'
         ],
