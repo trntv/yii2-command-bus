@@ -22,6 +22,12 @@ Either run
 php composer.phar require --prefer-dist trntv/yii2-command-bus
 ```
 
+or add
+```
+"trntv/yii2-command-bus": "^1.0"
+```
+to your composer.json file
+
 ## Setting Up
 
 After the installation, first step is to set the command bus component.
@@ -38,7 +44,12 @@ return [
 ```
 
 ### Background commands
-For the background commands worker, set a controller in your console config
+Install required package:
+```
+php composer.phar require symfony/process:^3.0
+```
+
+For the background commands worker, add a controller and command bus middleware in your config
 
 ```php
 'controllerMap' => [
@@ -63,7 +74,12 @@ For the background commands worker, set a controller in your console config
 ```
 
 ### Queued commands
-If you need commands to be run in queue set middleware, queue component and queue listener.
+Install required package:
+```
+php composer.phar require yiisoft/yii2-queue:dev-master@dev
+```
+
+If you need commands to be run in queue set middleware, queue component and queue listener in your config.
 For example, queue using Redis
 
 ```php
@@ -125,7 +141,7 @@ Yii::$app->commandBus->handle(new ReportCommand([
 ```
 
 ## Handlers
-
+Handlers are objects that will handle command execution
 ```php
 return [
     // ...
