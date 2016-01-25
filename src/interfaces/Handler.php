@@ -9,5 +9,5 @@ namespace trntv\bus\interfaces;
  */
 interface Handler
 {
-    public function handle(Command $command);
+    public function handle($command);
 }

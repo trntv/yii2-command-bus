@@ -14,7 +14,7 @@ use yii\queue\QueueInterface;
 
 
 /**
- * Class CommandBusController
+ * Class QueueBusController
  * @package trntv\bus\console
  * @author Eugene Terentev <eugene@terentev.net>
  */
@@ -37,15 +37,15 @@ class CommandBusController extends Controller
      */
     public $memoryLimit;
     /**
-     * @var int
+     * @var int Max attempts to run command
      */
     public $maxAttempts = 1;
     /**
-     * @var int
+     * @var int Next attempt delay
      */
     public $nextAttemptDelay = 10;
     /**
-     * @var bool
+     * @var bool If "true" command will be removed from queue after has been picked up
      */
     public $forceDelete = false;
 
@@ -62,24 +62,9 @@ class CommandBusController extends Controller
     }
 
     /**
-     * @param string $command serialized command object
-     * @return string
-     */
-    public function actionHandle($command)
-    {
-        try {
-            $command = $this->commandBus->unserializeBackgroundCommand($command);
-            $command->setRunningInBackground(true);
-            $this->commandBus->handle($command);
-        } catch (\Exception $e) {
-            Console::error($e->getMessage());
-        }
-    }
-
-    /**
      * @param string $queueName
      */
-    public function actionQueue($queueName)
+    public function actionListen($queueName)
     {
         Console::output("Listening queue \"{$queueName}\"");
 
@@ -132,7 +117,8 @@ class CommandBusController extends Controller
     protected function handle($job)
     {
         if (array_key_exists('serializer', $job['body'])) {
-            $command = call_user_func($job['body']['serializer'][1], $job['body']['object']);
+            $unserialize = $job['body']['serializer'][1];
+            $command = call_user_func($unserialize, $job['body']['object']);
             if ($command instanceof QueuedCommand) {
                 $command->setRunningInQueue(true);
                 return $this->commandBus->handle($command);

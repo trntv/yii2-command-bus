@@ -10,5 +10,5 @@ namespace trntv\bus\interfaces;
  */
 interface Middleware
 {
-    public function execute(Command $command, callable $next);
+    public function execute($command, callable $next);
 }

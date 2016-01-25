@@ -7,7 +7,7 @@ namespace trntv\bus\interfaces;
  *
  * @author Eugene Terentev <eugene@terentev.net>
  */
-interface BackgroundCommand extends Command
+interface BackgroundCommand
 {
     /**
      * @return bool

@@ -1,15 +1,15 @@
 <?php
 
 namespace trntv\bus\tests\data;
-use trntv\bus\Command;
 
+use yii\base\Object;
 
 /**
  * Class TestHandlerCommand
  * @package trntv\bus\tests\data
  * @author Eugene Terentev <eugene@terentev.net>
  */
-class TestHandlerCommand extends Command
+class TestHandlerCommand extends Object
 {
     public $param;
 }

@@ -14,10 +14,10 @@ use yii\base\Object;
 class TestHandler extends Object implements Handler
 {
     /**
-     * @param Command $command
+     * @param $command
      * @return mixed
      */
-    public function handle(Command $command)
+    public function handle($command)
     {
         return $command->param;
     }

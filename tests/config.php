@@ -9,14 +9,23 @@ return [
     'vendorPath' => dirname(__DIR__) . '/vendor',
 
     'controllerMap' => [
-        'bus' => 'trntv\bus\console\CommandBusController'
+        'background-bus' => 'trntv\bus\console\BackgroundBusController',
+        'queue-bus' => 'trntv\bus\console\QueueBusController',
     ],
     'components' => [
         'commandBus' => [
             'class' => 'trntv\bus\CommandBus',
             'locator' => 'trntv\bus\locators\ClassNameLocator',
-            'backgroundHandlerPath' => __DIR__ . '/yii.php',
-            'backgroundHandlerRoute' => 'bus/handle'
+            'middlewares' => [
+                [
+                    'class' => '\trntv\bus\middlewares\BackgroundCommandMiddleware',
+                    'backgroundHandlerPath' => __DIR__ . '/yii.php',
+                    'backgroundHandlerRoute' => 'background-bus/handle'
+                ],
+                [
+                    'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware'
+                ]
+            ],
         ],
         'queue' => [
             'class' => 'yii\queue\RedisQueue',

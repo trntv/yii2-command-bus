@@ -1,52 +1,23 @@
 <?php
 
-namespace trntv\bus;
+namespace trntv\bus\middlewares;
 
-use yii\base\Object;
-use trntv\bus\interfaces\Command as CommandInterface;
 
 /**
- * Class Command
- *
+ * Class QueuedCommandTrait
+ * @package trntv\bus\middlewares
  * @author Eugene Terentev <eugene@terentev.net>
  */
-abstract class Command extends Object implements CommandInterface
+trait QueuedCommandTrait
 {
-    /**
-     * @var bool
-     */
-    protected $async = false;
-
     /**
      * @var string
      */
     protected $queueName;
-
     /**
      * @var bool
      */
     protected $runningInQueue = false;
-
-    /**
-     * @var bool
-     */
-    protected $runningInBackground = false;
-
-    /**
-     * @param boolean $async
-     */
-    public function setAsync($async)
-    {
-        $this->async = $async;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAsync()
-    {
-        return $this->async;
-    }
 
     /**
      * @param mixed $queueName
@@ -54,23 +25,6 @@ abstract class Command extends Object implements CommandInterface
     public function setQueueName($queueName)
     {
         $this->queueName = $queueName;
-    }
-
-    /**
-     * @param boolean $runningInBackground
-     */
-    public function setRunningInBackground($runningInBackground)
-    {
-        $this->runningInBackground = $runningInBackground;
-    }
-
-
-    /**
-     * @return bool
-     */
-    public function isRunningInBackground()
-    {
-        return $this->runningInBackground;
     }
 
     /**

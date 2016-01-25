@@ -23,12 +23,12 @@ class ClassNameLocator extends Object implements HandlerLocator
     public $handlers;
 
     /**
-     * @param Command $command
+     * @param $command
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      * @internal param CommandBus $commandBus
      */
-    public function locate(Command $command)
+    public function locate($command)
     {
         $className = get_class($command);
 

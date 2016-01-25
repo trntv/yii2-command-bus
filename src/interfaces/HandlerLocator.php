@@ -10,8 +10,8 @@ namespace trntv\bus\interfaces;
 interface HandlerLocator
 {
     /**
-     * @param Command $command
+     * @param $command
      * @return mixed
      */
-    public function locate(Command $command);
+    public function locate($command);
 }

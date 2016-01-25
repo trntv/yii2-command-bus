@@ -33,10 +33,10 @@ class ChainedLocator extends Object implements HandlerLocator
     }
 
     /**
-     * @param Command $command
+     * @param $command
      * @return mixed
      */
-    public function locate(Command $command)
+    public function locate($command)
     {
         foreach ($this->locators as $locator) {
             /** @var HandlerLocator $locator */

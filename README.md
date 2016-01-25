@@ -37,27 +37,33 @@ return [
 ];
 ```
 
+### Background commands
 For the background commands worker, set a controller in your console config
 
 ```php
 'controllerMap' => [
-    'bus' => [
-        'class' => 'trnv\bus\console\CommandBusController',
+    'background-bus' => [
+        'class' => 'trnv\bus\console\BackgroundBusController',
     ]
 ],
 
 'components' => [
         'commandBus' =>[
             ...
-            'backgroundHandlerPath' => '@console/yii',
-            'backgroundHandlerRoute' => 'bus/handle',
+            'middlewares' => [
+                [
+                    'class' => '\trntv\bus\middlewares\BackgroundCommandMiddleware'
+                    'backgroundHandlerPath' => '@console/yii',
+                    'backgroundHandlerRoute' => 'background-bus/handle',
+                ]                
+            ]
             ...            
-        ]
-        
+        ]        
 ],
 ```
 
-If you need commands to be run in queue set the queue component.
+### Queued commands
+If you need commands to be run in queue set middleware, queue component and queue listener.
 For example, queue using Redis
 
 ```php
@@ -69,22 +75,44 @@ For example, queue using Redis
             'host'   => '127.0.0.1',
             'port'   => '6379',
         ]
+    ],
+    
+    'commandBus' =>[
+        ...
+        'middlewares' => [
+            [
+                'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware'
+            ]                
+        ]
+        ...            
+    ]     
+],
+'controllerMap' => [
+    'queue-bus' => [
+        'class' => '\trntv\bus\console\QueueBusController'
     ]
 ]
+```
+then run console command to listen queue:
+
+```
+php yii queue-bus/listen some-queue-name
 ```
 
 ## Usage
 1. Create command that will be executed in background async mode
 
 ```php
-class ReportCommand extends Command implements BackgroundCommand, SelfHandlingCommand
+class ReportCommand extends Object implements BackgroundCommand, SelfHandlingCommand
 {
+    use BackgroundCommandTrait;
+    
     public $async = true;
     
     public $someImportantData;
     
-    public function handle() {
-        // do what you needs
+    public function handle($command) {
+        // do what you need
     }
 }
 ```

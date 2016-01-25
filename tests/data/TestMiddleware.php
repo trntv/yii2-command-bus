@@ -15,7 +15,7 @@ use yii\base\Object;
 class TestMiddleware extends Object implements Middleware
 {
 
-    public function execute(Command $command, callable $next)
+    public function execute($command, callable $next)
     {
         \Yii::info('middleware test 1 ok');
         $result = $next($command);
