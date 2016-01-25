@@ -15,7 +15,7 @@ use trntv\bus\exceptions\MissingHandlerException;
  * Class CommandBus
  * @package trntv\bus
  */
-class CommandBus extends Component
+class CommandBus extends Component implements interfaces\CommandBus
 {
     /**
      * @var array
@@ -81,20 +81,18 @@ class CommandBus extends Component
     {
         // Built-in self-handling locator
         if ($command instanceof SelfHandlingCommand) {
-            $handlerMiddleware = function ($command) {
-                return $command->handle($command);
-            };
+            $handler = $command;
         } else {
             $handler = $this->locator->locate($command, $this);
-
-            if (!$handler) {
-                throw new MissingHandlerException('Handler not found');
-            }
-
-            $handlerMiddleware = function ($command) use ($handler) {
-                return $handler->handle($command);
-            };
         }
+
+        if (!$handler) {
+            throw new MissingHandlerException('Handler not found');
+        }
+
+        $handlerMiddleware = function ($command) use ($handler) {
+            return $handler->handle($command);
+        };
 
         return $handlerMiddleware;
     }
