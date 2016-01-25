@@ -7,7 +7,7 @@ namespace trntv\bus\interfaces;
  *
  * @author Eugene Terentev <eugene@terentev.net>
  */
-interface QueuedCommand extends Command
+interface QueuedCommand
 {
     /**
      * @return bool

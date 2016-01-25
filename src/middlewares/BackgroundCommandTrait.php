@@ -5,7 +5,7 @@ namespace trntv\bus\middlewares;
 
 /**
  * Class BackgroundCommandTrait
- * @package trntv\bus\middlewares
+ *
  * @author Eugene Terentev <eugene@terentev.net>
  */
 trait BackgroundCommandTrait

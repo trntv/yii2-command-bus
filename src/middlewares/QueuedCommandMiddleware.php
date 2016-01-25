@@ -20,6 +20,9 @@ class QueuedCommandMiddleware extends Object implements Middleware
      */
     public $queue = 'queue';
 
+    /**
+     * @var array
+     */
     public $serializer = ['serialize', 'unserialize'];
 
     /**
