@@ -18,7 +18,7 @@ use yii\queue\QueueInterface;
  * @package trntv\bus\console
  * @author Eugene Terentev <eugene@terentev.net>
  */
-class CommandBusController extends Controller
+class QueueBusController extends Controller
 {
     /**
      * @var mixed|QueueInterface
