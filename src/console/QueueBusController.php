@@ -85,17 +85,11 @@ class QueueBusController extends Controller
 
                 try {
                     $this->handle($job);
+                    $this->delete($job);
                     Console::output("Job #{$jobID} has been successfully done");
                 } catch (\Exception $e) {
-                    Yii::error($e->getMessage(), 'queue:listen');
-                    Console::error($e->getMessage());
-                    if (++$attempt < $this->maxAttempts) {
-                        $job = $this->setJobMeta($job, 'attempt', $attempt);
-                        $this->release($job, $this->nextAttemptDelay);
-                    }
+                    $this->onError($e, $job);
                 }
-
-                $this->delete($job);
             }
 
             // Check memory usage
@@ -207,5 +201,19 @@ class QueueBusController extends Controller
         }
 
         return ArrayHelper::getValue($job['_meta'], $key, $default);
+    }
+
+    /**
+     * @param $exception
+     * @param $job
+     */
+    protected function onError(\Exception $exception, $job)
+    {
+        Console::error($exception->getMessage());
+        $attempt = $this->getJobMeta($job, 'attempt', 0);
+        if (++$attempt < $this->maxAttempts) {
+            $job = $this->setJobMeta($job, 'attempt', $attempt);
+            $this->release($job, $this->nextAttemptDelay);
+        }
     }
 }
