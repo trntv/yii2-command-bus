@@ -54,7 +54,7 @@ For the background commands worker, add a controller and command bus middleware 
 ```php
 'controllerMap' => [
     'background-bus' => [
-        'class' => 'trnv\bus\console\BackgroundBusController',
+        'class' => 'trntv\bus\console\BackgroundBusController',
     ]
 ],
 
@@ -63,7 +63,7 @@ For the background commands worker, add a controller and command bus middleware 
             ...
             'middlewares' => [
                 [
-                    'class' => '\trntv\bus\middlewares\BackgroundCommandMiddleware'
+                    'class' => '\trntv\bus\middlewares\BackgroundCommandMiddleware',
                     'backgroundHandlerPath' => '@console/yii',
                     'backgroundHandlerRoute' => 'background-bus/handle',
                 ]                
