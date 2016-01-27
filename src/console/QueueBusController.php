@@ -80,19 +80,20 @@ class QueueBusController extends Controller
             // Handle job
             if ($job) {
 
-                if ($this->forceDelete) {
-                    $this->delete($job);
-                    $wasDeleted = true;
-                }
-
-                $jobID = ArrayHelper::getValue($job, 'id');
+                $id = ArrayHelper::getValue($job, 'id');
+                Console::output("New job ID#{$id}");
 
                 try {
+                    if ($this->forceDelete) {
+                        $this->delete($job);
+                        $wasDeleted = true;
+                    }
+
                     $this->handle($job);
                     if (!$wasDeleted) {
                         $this->delete($job);
                     }
-                    Console::output("Job #{$jobID} has been successfully done");
+                    Console::output("Job #{$id} has been successfully done");
                 } catch (\Exception $e) {
                     $this->onError($e, $job);
                 }
