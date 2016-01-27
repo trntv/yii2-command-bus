@@ -37,14 +37,6 @@ class QueueBusController extends Controller
      */
     public $memoryLimit;
     /**
-     * @var int Max attempts to run command
-     */
-    public $maxAttempts = 1;
-    /**
-     * @var int Next attempt delay
-     */
-    public $nextAttemptDelay = 10;
-    /**
      * @var bool If "true" command will be removed from queue after has been picked up
      */
     public $forceDelete = false;
@@ -92,8 +84,6 @@ class QueueBusController extends Controller
                 }
 
                 $jobID = ArrayHelper::getValue($job, 'id');
-                $attempt = $this->getJobMeta($job, 'attempt', 0);
-                Console::output("Handling job ID#{$jobID}; Attempt: {$attempt}");
 
                 try {
                     $this->handle($job);
@@ -150,18 +140,12 @@ class QueueBusController extends Controller
     }
 
     /**
+     * @param $exception
      * @param $job
-     * @param int $delay
      */
-    protected function release($job, $delay = 0)
+    protected function onError(\Exception $exception, $job)
     {
-        $this->queue->release([
-            'queue' => $job['queue'],
-            'body' => Json::encode([
-                'id' => $job['id'],
-                'body' => $job['body']
-            ])
-        ], $delay);
+        Console::error("Job ID#{$job['id']}: {$exception->getMessage()}");
     }
 
     /**
@@ -182,51 +166,5 @@ class QueueBusController extends Controller
     {
         Console::output('Exiting queue listener');
         Yii::$app->end();
-    }
-
-    /**
-     * @param $job
-     * @param $key
-     * @param $value
-     * @return mixed
-     */
-    protected function setJobMeta($job, $key, $value)
-    {
-        if (!array_key_exists('_meta', $job) || !is_array($job['_meta'])) {
-            $job['_meta'] = [];
-        }
-
-        $job['_meta'][$key] = $value;
-
-        return $job;
-    }
-
-    /**
-     * @param $job
-     * @param $key
-     * @param null $default
-     * @return mixed|null
-     */
-    protected function getJobMeta($job, $key, $default = null)
-    {
-        if (!array_key_exists('_meta', $job)) {
-            return $default;
-        }
-
-        return ArrayHelper::getValue($job['_meta'], $key, $default);
-    }
-
-    /**
-     * @param $exception
-     * @param $job
-     */
-    protected function onError(\Exception $exception, $job)
-    {
-        Console::error($exception->getMessage());
-        $attempt = $this->getJobMeta($job, 'attempt', 0);
-        if (++$attempt < $this->maxAttempts) {
-            $job = $this->setJobMeta($job, 'attempt', $attempt);
-            $this->release($job, $this->nextAttemptDelay);
-        }
     }
 }
