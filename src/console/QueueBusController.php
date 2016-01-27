@@ -72,12 +72,12 @@ class QueueBusController extends Controller
         while(true) {
             $job = $this->queue->pop($queueName);
 
-            if ($this->forceDelete) {
-                $this->delete($job);
-            }
-
             // Handle job
             if ($job) {
+
+                if ($this->forceDelete) {
+                    $this->delete($job);
+                }
 
                 $jobID = ArrayHelper::getValue($job, 'id');
                 $attempt = $this->getJobMeta($job, 'attempt', 0);
@@ -118,7 +118,7 @@ class QueueBusController extends Controller
                 return $this->commandBus->handle($command);
             }
         }
-        Console::error('Malformed job ID#' . $job['id']);
+        Console::error("Malformed job ID#{$job['id']}");
         $this->delete($job);
     }
 
@@ -134,6 +134,7 @@ class QueueBusController extends Controller
                 'body' => $job['body']
             ])
         ]);
+        Console::output("Job ID#{$job['id']} was deleted from queue");
     }
 
     /**
