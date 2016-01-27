@@ -24,6 +24,10 @@ class QueuedCommandMiddleware extends Object implements Middleware
      * @var array
      */
     public $serializer = ['serialize', 'unserialize'];
+    /**
+     * @var string
+     */
+    public $defaultQueueName;
 
     /**
      * @throws \yii\base\InvalidConfigException
@@ -41,12 +45,22 @@ class QueuedCommandMiddleware extends Object implements Middleware
     public function execute($command, callable $next)
     {
         if ($command instanceof QueuedCommand && !$command->isRunningInQueue()) {
+
+            $queueName = $command->getQueueName();
+            if (!$queueName) {
+                if ($this->defaultQueueName) {
+                    $queueName = $this->defaultQueueName;
+                } else {
+                    $queueName = get_class($command);
+                }
+            }
+
             return $this->queue->push(
                 [
                     'serializer' => $this->serializer,
                     'object' => call_user_func($this->serializer[0], $command)
                 ],
-                $command->getQueueName()
+                $queueName
             );
         }
 

@@ -97,7 +97,8 @@ For example, queue using Redis
         ...
         'middlewares' => [
             [
-                'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware'
+                'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',
+                // 'defaultQueueName' => 'commands-queue' // You can set default queue name
             ]                
         ]
         ...            

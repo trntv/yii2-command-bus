@@ -11,10 +11,6 @@ namespace trntv\bus\middlewares;
 trait QueuedCommandTrait
 {
     /**
-     * @var string
-     */
-    protected $queueName;
-    /**
      * @var bool
      */
     protected $runningInQueue = false;
@@ -48,9 +44,8 @@ trait QueuedCommandTrait
      */
     public function getQueueName()
     {
-        if (!$this->queueName) {
-            $queueName = self::className();
-        } else {
+        $queueName = null;
+        if (property_exists(get_called_class(), 'queueName') && $this->queueName) {
             $queueName = $this->queueName;
         }
         return $queueName;
