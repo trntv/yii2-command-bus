@@ -12,6 +12,13 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
+services:
+  - docker
+
+before_install:
+  - docker run -d -p 127.0.0.1:6379:6379 redis:3
+  - docker ps -a
+
 install:
   - travis_retry composer self-update && composer --version
   - travis_retry composer global require "fxp/composer-asset-plugin:~1.1.1"
@@ -19,7 +26,6 @@ install:
   - travis_retry composer install --prefer-dist --no-interaction
 
 before_script:
-  # show some versions and env information
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
