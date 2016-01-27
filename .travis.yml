@@ -1,7 +1,6 @@
 sudo: required
-
 language: php
-
+group: edge
 php:
   - 5.5
   - 5.6
