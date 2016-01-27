@@ -75,19 +75,23 @@ class QueueBusController extends Controller
     {
         while(true) {
             $job = $this->queue->pop($queueName);
+            $wasDeleted = false;
 
             // Handle job
             if ($job) {
 
                 if ($this->forceDelete) {
                     $this->delete($job);
+                    $wasDeleted = true;
                 }
 
                 $jobID = ArrayHelper::getValue($job, 'id');
 
                 try {
                     $this->handle($job);
-                    $this->delete($job);
+                    if (!$wasDeleted) {
+                        $this->delete($job);
+                    }
                     Console::output("Job #{$jobID} has been successfully done");
                 } catch (\Exception $e) {
                     $this->onError($e, $job);
