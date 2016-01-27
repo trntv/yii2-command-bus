@@ -69,6 +69,18 @@ class QueueBusController extends Controller
         Console::output("Listening queue \"{$queueName}\"");
 
         // Run loop
+        try {
+            $this->loop($queueName);
+        } catch (\Exception $e) {
+            Console::error($e->getMessage());
+        }
+    }
+
+    /**
+     * @param $queueName
+     */
+    protected function loop($queueName)
+    {
         while(true) {
             $job = $this->queue->pop($queueName);
 
