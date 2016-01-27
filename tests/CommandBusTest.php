@@ -5,13 +5,10 @@
 
 namespace trntv\bus\tests;
 
-use Symfony\Component\Process\Process;
-use trntv\bus\tests\data\BackgroundTestCommand;
 use trntv\bus\tests\data\TestCommand;
 use trntv\bus\tests\data\TestHandler;
 use trntv\bus\tests\data\TestHandlerCommand;
 use trntv\bus\tests\data\TestMiddleware;
-use yii\helpers\Console;
 
 class CommandBusTest extends TestCase
 {
@@ -19,18 +16,6 @@ class CommandBusTest extends TestCase
     {
         $result = $this->commandBus->handle(new TestCommand());
         $this->assertEquals('test ok', $result);
-    }
-
-    public function testBackgroundCommand()
-    {
-        /** @var $process Process */
-        $process = $this->commandBus->handle(new BackgroundTestCommand());
-
-        Console::output($process->getOutput());
-        Console::output($process->getErrorOutput());
-
-        $this->assertTrue($process->isSuccessful());
-        $this->assertEquals('test ok', file_get_contents(__DIR__ . '/files/test-file'));
     }
 
     public function testMiddleware()
@@ -50,11 +35,4 @@ class CommandBusTest extends TestCase
         ]));
         $this->assertEquals('test ok', $result);
     }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-        @unlink(__DIR__ . '/files/test-file');
-    }
-
 }

@@ -23,7 +23,8 @@ return [
                     'backgroundHandlerRoute' => 'background-bus/handle'
                 ],
                 [
-                    'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware'
+                    'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',
+                    'defaultQueueName' => 'test-commands-queue'
                 ]
             ],
         ],
