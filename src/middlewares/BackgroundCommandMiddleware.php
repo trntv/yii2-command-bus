@@ -28,6 +28,14 @@ class BackgroundCommandMiddleware extends Object implements Middleware
      */
     public $backgroundHandlerRoute;
     /**
+     * @var string console route
+     */
+    public $backgroundProcessTimeout = 60;
+    /**
+     * @var string console route
+     */
+    public $backgroundProcessIdleTimeout;
+    /**
      * @var array
      */
     public $backgroundHandlerArguments = [];
@@ -54,7 +62,8 @@ class BackgroundCommandMiddleware extends Object implements Middleware
         $arguments = implode(' ', $this->getBackgroundHandlerArguments($command));
 
         $process = new Process("{$binary} {$path} {$route} {$arguments}");
-
+        $process->setTimeout($this->backgroundProcessTimeout);
+        $process->setIdleTimeout($this->backgroundProcessIdleTimeout);
         if (!$command->isAsync()) {
             $process->run();
         } else {
