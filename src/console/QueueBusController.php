@@ -93,10 +93,11 @@ class QueueBusController extends Controller
                     if (!$wasDeleted) {
                         $this->delete($job);
                     }
-                    Console::output("Job #{$id} has been successfully done");
+                    Console::output("Job ID#{$id} has been successfully done");
                 } catch (\Exception $e) {
                     $this->onError($e, $job);
                 }
+                unset($id, $job);
             }
 
             // Check memory usage

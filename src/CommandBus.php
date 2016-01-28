@@ -18,10 +18,6 @@ use trntv\bus\exceptions\MissingHandlerException;
 class CommandBus extends Component implements interfaces\CommandBus
 {
     /**
-     * @var array
-     */
-    public $serializer = ['serialize', 'unserialize'];
-    /**
      * @var HandlerLocator|null
      */
     public $locator;
