@@ -89,13 +89,13 @@ class QueueBusController extends Controller
                         $wasDeleted = true;
                     }
 
-                    $this->handle($job);
+                    $result = $this->handle($job);
                     if (!$wasDeleted) {
                         $this->delete($job);
                     }
-                    Console::output("Job ID#{$id} has been successfully done");
+                    $this->onSuccess($job, $result);
                 } catch (\Exception $e) {
-                    $this->onError($e, $job);
+                    $this->onError($job, $e);
                 }
                 unset($id, $job);
             }
@@ -146,10 +146,19 @@ class QueueBusController extends Controller
     }
 
     /**
+     * @param $job
+     * @param $result
+     */
+    protected function onSuccess($job, $result = null)
+    {
+        Console::output("Job ID#{$job['id']} has been successfully done");
+    }
+
+    /**
      * @param $exception
      * @param $job
      */
-    protected function onError(\Exception $exception, $job)
+    protected function onError($job, \Exception $exception = null)
     {
         Console::error("Job ID#{$job['id']}: {$exception->getMessage()}");
     }
