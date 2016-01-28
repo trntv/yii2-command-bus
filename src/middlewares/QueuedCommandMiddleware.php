@@ -28,6 +28,10 @@ class QueuedCommandMiddleware extends Object implements Middleware
      * @var string
      */
     public $defaultQueueName;
+    /**
+     * @var string
+     */
+    public $delay = 0;
 
     /**
      * @throws \yii\base\InvalidConfigException
@@ -60,7 +64,8 @@ class QueuedCommandMiddleware extends Object implements Middleware
                     'serializer' => $this->serializer,
                     'object' => call_user_func($this->serializer[0], $command)
                 ],
-                $queueName
+                $queueName,
+                $this->delay
             );
         }
 
