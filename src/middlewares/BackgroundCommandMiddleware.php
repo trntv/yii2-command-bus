@@ -28,11 +28,11 @@ class BackgroundCommandMiddleware extends Object implements Middleware
      */
     public $backgroundHandlerRoute;
     /**
-     * @var string console route
+     * @var int|float|null process timeout
      */
     public $backgroundProcessTimeout = 60;
     /**
-     * @var string console route
+     * @var int|float|null process idle timeout
      */
     public $backgroundProcessIdleTimeout;
     /**
