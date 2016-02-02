@@ -20,6 +20,8 @@ use yii\queue\QueueInterface;
  */
 class QueueBusController extends Controller
 {
+    const EVENT_BEFORE_HANDLE = 'beforeHandle';
+    const EVENT_AFTER_HANDLE = 'afterHandle';
     /**
      * @var mixed|QueueInterface
      */
@@ -83,6 +85,10 @@ class QueueBusController extends Controller
                 $id = ArrayHelper::getValue($job, 'id');
                 Console::output("New job ID#{$id}");
 
+                if(!$this->beforeHandle($job)) {
+                    continue;
+                };
+
                 try {
                     if ($this->forceDelete) {
                         $this->delete($job);
@@ -97,6 +103,7 @@ class QueueBusController extends Controller
                 } catch (\Exception $e) {
                     $this->onError($job, $e);
                 }
+                $this->afterHandle($job);
                 unset($id, $job);
             }
 
@@ -110,6 +117,19 @@ class QueueBusController extends Controller
 
             sleep($this->sleep);
         }
+    }
+
+    /**
+     * @param $job
+     * @return mixed
+     */
+    protected function beforeHandle($job)
+    {
+        $event = new QueueBusEvent([
+            'job' => $job
+        ]);
+        $this->trigger(self::EVENT_BEFORE_HANDLE, $event);
+        return $event->isValid;
     }
 
     /**
@@ -128,6 +148,16 @@ class QueueBusController extends Controller
         }
         Console::error("Malformed job ID#{$job['id']}");
         $this->delete($job);
+    }
+
+    /**
+     * @param $job
+     */
+    protected function afterHandle($job)
+    {
+        $this->trigger(self::EVENT_AFTER_HANDLE, new QueueBusEvent([
+            'job' => $job
+        ]));
     }
 
     /**
