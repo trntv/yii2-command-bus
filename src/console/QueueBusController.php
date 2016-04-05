@@ -103,8 +103,11 @@ class QueueBusController extends Controller
                 } catch (\Exception $e) {
                     $this->onError($job, $e);
                 }
+
                 $this->afterHandle($job);
                 unset($id, $job);
+            } else {
+                sleep($this->sleep);
             }
 
             // Check memory usage
@@ -114,8 +117,6 @@ class QueueBusController extends Controller
                     $this->end();
                 }
             }
-
-            sleep($this->sleep);
         }
     }
 
