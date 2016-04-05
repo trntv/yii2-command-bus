@@ -2,10 +2,10 @@
 
 namespace trntv\bus\middlewares;
 
-use trntv\bus\interfaces\Middleware;
 use Yii;
 use yii\base\Object;
 use yii\log\Logger;
+use trntv\bus\interfaces\Middleware;
 
 /**
  * Class LoggingMiddleware
@@ -15,9 +15,14 @@ use yii\log\Logger;
 class LoggingMiddleware extends Object implements Middleware
 {
     /**
-     * @var integer the level of log message
+     * @var integer log message level
      */
     public $level;
+
+    /**
+     * @var string log message category
+     */
+    public $category = 'command-bus';
 
     /**
      * @return void
@@ -37,9 +42,9 @@ class LoggingMiddleware extends Object implements Middleware
     public function execute($command, callable $next)
     {
         $command = get_class($command);
-        Yii::getLogger()->log("Command execution started: {$command}", $this->level, 'command-bus');
+        Yii::getLogger()->log("Command execution started: {$command}", $this->level, $this->category);
         $result = $next($command);
-        Yii::getLogger()->log("Command execution ended: {$command}", $this->level, 'command-bus');
+        Yii::getLogger()->log("Command execution ended: {$command}", $this->level, $this->category);
         return $result;
     }
 }
