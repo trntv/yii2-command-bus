@@ -6,12 +6,6 @@ php:
   - 7.0
   - hhvm
 
-# cache vendor dirs
-cache:
-  directories:
-    - vendor
-    - $HOME/.composer/cache
-
 services:
   - docker
 
