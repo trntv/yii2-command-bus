@@ -142,10 +142,11 @@ then run console command to listen queue:
 ```
 php yii queue-bus/listen some-queue-name
 ```
-Create background command:
+Create and handle command
 ```php
 class HeavyComputationsCommand extends Object implements QueuedCommand
 {
+    use QueuedCommandTrait;
     public $queueName = 'you-can-change-queue-name-here';
     public $delay = 5; // Command will be delayed for 5 seconds
 }
