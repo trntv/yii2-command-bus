@@ -15,6 +15,8 @@ use yii\base\Object;
 class QueuedTestCommand extends Object implements SelfHandlingCommand, QueuedCommand
 {
     use QueuedCommandTrait;
+    
+    public $delay = 10;
 
     public function handle($command)
     {

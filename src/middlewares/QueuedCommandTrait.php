@@ -50,4 +50,16 @@ trait QueuedCommandTrait
         }
         return $queueName;
     }
+
+    /**
+     * @return null|int
+     */
+    public function getDelay()
+    {
+        $delay = null;
+        if (property_exists(get_called_class(), 'delay')) {
+            $delay = $this->delay;
+        }
+        return $delay;
+    }
 }

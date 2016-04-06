@@ -18,4 +18,9 @@ interface QueuedCommand
      * @return string
      */
     public function getQueueName();
+    
+    /**
+     * @return int
+     */
+    public function getDelay();
 }

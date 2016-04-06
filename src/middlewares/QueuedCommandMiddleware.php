@@ -29,7 +29,7 @@ class QueuedCommandMiddleware extends Object implements Middleware
      */
     public $defaultQueueName;
     /**
-     * @var string
+     * @var int Default delay for all commands
      */
     public $delay = 0;
 
@@ -51,6 +51,8 @@ class QueuedCommandMiddleware extends Object implements Middleware
         if ($command instanceof QueuedCommand && !$command->isRunningInQueue()) {
 
             $queueName = $command->getQueueName();
+            $delay = $command->getDelay() !== null ?: $this->delay;
+            
             if (!$queueName) {
                 if ($this->defaultQueueName) {
                     $queueName = $this->defaultQueueName;
@@ -65,7 +67,7 @@ class QueuedCommandMiddleware extends Object implements Middleware
                     'object' => call_user_func($this->serializer[0], $command)
                 ],
                 $queueName,
-                $this->delay
+                $delay
             );
         }
 

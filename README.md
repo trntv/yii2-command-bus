@@ -30,6 +30,7 @@ to your composer.json file
 
 ## Setting Up
 
+### 1. Command Bus Service
 After the installation, first step is to set the command bus component.
 
 ```php
@@ -43,7 +44,7 @@ return [
 ];
 ```
 
-### Background commands
+### 2. Background commands support (optional)
 Install required package:
 ```
 php composer.phar require symfony/process:^3.0
@@ -73,13 +74,38 @@ For the background commands worker, add a controller and command bus middleware 
 ],
 ```
 
-### Queued commands
+Create background command
+```php
+class ReportCommand extends Object implements BackgroundCommand, SelfHandlingCommand
+{
+    use BackgroundCommandTrait;
+    
+    public $async = true;
+    
+    public $someImportantData;
+    
+    public function handle($command) {
+        // do what you need
+    }
+}
+```
+And use it!
+```php
+Yii::$app->commandBus->handle(new ReportCommand([
+    'someImportantData' => [ // data // ]
+]))
+```
+
+### 3. Queued commands support (optional)
 Install required package:
+
 ```
 php composer.phar require yiisoft/yii2-queue:dev-master@dev
 ```
 
-If you need commands to be run in queue set middleware, queue component and queue listener in your config.
+If you need commands to be run in queue, you need to set middleware, 
+queue component and queue listener in your config.
+
 For example, queue using Redis
 
 ```php
@@ -98,7 +124,8 @@ For example, queue using Redis
         'middlewares' => [
             [
                 'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',
-                // 'defaultQueueName' => 'commands-queue' // You can set default queue name
+                // 'defaultQueueName' => 'commands-queue', // You can set default queue name
+                // 'delay' => 3, // You can set default delay for all commands here
             ]                
         ]
         ...            
@@ -115,34 +142,24 @@ then run console command to listen queue:
 ```
 php yii queue-bus/listen some-queue-name
 ```
-
-## Usage
-1. Create command that will be executed in background async mode
-
+Create background command:
 ```php
-class ReportCommand extends Object implements BackgroundCommand, SelfHandlingCommand
+class HeavyComputationsCommand extends Object implements QueuedCommand
 {
-    use BackgroundCommandTrait;
-    
-    public $async = true;
-    
-    public $someImportantData;
-    
-    public function handle($command) {
-        // do what you need
-    }
+    public $queueName = 'you-can-change-queue-name-here';
+    public $delay = 5; // Command will be delayed for 5 seconds
 }
+
+$command = new ReportCommand([
+    'delay' => 7, // You can change delay here
+])
+Yii::$app->commandBus->handle($command)
 ```
 
-2. Command Bus will handle the rest
-```php
-Yii::$app->commandBus->handle(new ReportCommand([
-    'someImportantData' => [ // data // ]
-]))
-```
-
-## Handlers
+### 4. Handlers
 Handlers are objects that will handle command execution
+There are to possible ways to execute command:
+#### 4.1 External handler 
 ```php
 return [
     // ...
@@ -164,4 +181,15 @@ $handler = new SomeHandler;
 Yii::$app->commandBus->locator->addHandler($handler, 'app\commands\SomeCommand');
 // or
 Yii::$app->commandBus->locator->addHandler('app\handlers\SomeHandler', 'app\commands\SomeCommand');
+```
+#### 4.1 Self-handling command
+```php
+class SomeCommand implements SelfHandlingCommand
+{
+    public function handle($command) {
+        // do what you need
+    }
+}
+
+$command = Yii::$app->commandBus->handle($command);
 ```
