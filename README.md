@@ -80,9 +80,11 @@ class ReportCommand extends Object implements BackgroundCommand, SelfHandlingCom
 {
     use BackgroundCommandTrait;
     
-    public $async = true;
-    
     public $someImportantData;
+    
+    public function isAsync() {
+        return true;
+    }
     
     public function handle($command) {
         // do what you need
