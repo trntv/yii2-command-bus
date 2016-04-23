@@ -64,10 +64,10 @@ class BackgroundCommandMiddleware extends Object implements Middleware
         $process = new Process("{$binary} {$path} {$route} {$arguments}");
         $process->setTimeout($this->backgroundProcessTimeout);
         $process->setIdleTimeout($this->backgroundProcessIdleTimeout);
-        if (!$command->isAsync()) {
-            $process->run();
-        } else {
+        if ($command->isAsync()) {
             $process->start();
+        } else {
+            $process->run();
         }
 
         return $process;

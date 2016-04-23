@@ -20,12 +20,17 @@ return [
                 [
                     'class' => '\trntv\bus\middlewares\BackgroundCommandMiddleware',
                     'backgroundHandlerPath' => __DIR__ . '/yii.php',
-                    'backgroundHandlerRoute' => 'background-bus/handle'
+                    'backgroundHandlerRoute' => 'background-bus/handle',
+                    'backgroundProcessTimeout' => 3
                 ],
                 [
                     'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',
                     'defaultQueueName' => 'test-commands-queue'
-                ]
+                ],
+                [
+                    'class' => '\trntv\bus\middlewares\LoggingMiddleware',
+                    'level' => 1,
+                ],
             ],
         ],
         'queue' => [

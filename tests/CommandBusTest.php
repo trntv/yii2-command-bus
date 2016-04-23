@@ -20,11 +20,12 @@ class CommandBusTest extends TestCase
 
     public function testMiddleware()
     {
+        \Yii::getLogger()->flush();
         $this->commandBus->addMiddleware(new TestMiddleware());
         $result = $this->commandBus->handle(new TestCommand());
         $this->assertEquals('test ok', $result);
-        $this->assertNotFalse(array_search('middleware test 1 ok', \Yii::$app->getLog()->logger->messages[0]));
-        $this->assertNotFalse(array_search('middleware test 2 ok', \Yii::$app->getLog()->logger->messages[1]));
+        $this->assertNotFalse(array_search('middleware test 1 ok', \Yii::$app->getLog()->logger->messages[1]));
+        $this->assertNotFalse(array_search('middleware test 2 ok', \Yii::$app->getLog()->logger->messages[2]));
     }
 
     public function testHandler()

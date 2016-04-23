@@ -5,6 +5,7 @@
 
 namespace trntv\bus\tests;
 
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use Symfony\Component\Process\Process;
 use trntv\bus\tests\data\BackgroundTestCommand;
 
@@ -37,6 +38,22 @@ class BackgroundMiddlewareTest extends TestCase
             $this->assertEquals('test ok', $output);
             $this->assertNotEquals('test is not ok', $output);
         }
+    }
+
+    public function testBackgroundCommandTimeout() {
+        $commandWithTimeout = new BackgroundTestCommand([
+            'async' => true,
+            'sleep' => 4
+        ]);
+        /** @var $process Process */
+        $process = $this->commandBus->handle($commandWithTimeout);
+        $this->assertInstanceOf(Process::class, $process);
+        try {
+            while ($process->isRunning()) {
+                $process->checkTimeout();
+            }
+            $this->fail('Timeout not working');
+        } catch (ProcessTimedOutException $e) {}
     }
 
     public function tearDown()

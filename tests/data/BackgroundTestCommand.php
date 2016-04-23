@@ -17,8 +17,11 @@ class BackgroundTestCommand extends Object implements BackgroundCommand, SelfHan
 {
     use BackgroundCommandTrait;
 
+    public $sleep = 1;
+
     public function handle($command)
     {
+        sleep($this->sleep);
         echo 'test ok';
     }
 }
