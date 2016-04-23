@@ -19,6 +19,6 @@ class BackgroundTestCommand extends Object implements BackgroundCommand, SelfHan
 
     public function handle($command)
     {
-        file_put_contents(dirname(__DIR__) . '/files/test-file', 'test ok');
+        echo 'test ok';
     }
 }

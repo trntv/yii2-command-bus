@@ -16,7 +16,27 @@ class BackgroundMiddlewareTest extends TestCase
         $process = $this->commandBus->handle(new BackgroundTestCommand());
         $this->assertInstanceOf(Process::class, $process);
         $this->assertTrue($process->isSuccessful());
-        $this->assertEquals('test ok', file_get_contents(__DIR__ . '/files/test-file'));
+        $this->assertEquals('test ok', $process->getOutput());
+    }
+
+
+    public function testBackgroundAsyncCommand()
+    {
+        $command = new BackgroundTestCommand([
+            'async' => true
+        ]);
+        for ($i = 0; $i < 10; $i++) {
+            /** @var $process Process */
+            $process = $this->commandBus->handle($command);
+            $this->assertInstanceOf(Process::class, $process);
+            while ($process->isRunning()) {
+                // waiting for process to finish
+            }
+            $this->assertTrue($process->isSuccessful());
+            $output = $process->getOutput();
+            $this->assertEquals('test ok', $output);
+            $this->assertNotEquals('test is not ok', $output);
+        }
     }
 
     public function tearDown()

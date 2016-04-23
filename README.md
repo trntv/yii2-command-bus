@@ -80,8 +80,6 @@ class ReportCommand extends Object implements BackgroundCommand, SelfHandlingCom
 {
     use BackgroundCommandTrait;
     
-    public $async = true;
-    
     public $someImportantData;
     
     public function handle($command) {
@@ -89,9 +87,10 @@ class ReportCommand extends Object implements BackgroundCommand, SelfHandlingCom
     }
 }
 ```
-And use it!
+And run it asynchronously!
 ```php
 Yii::$app->commandBus->handle(new ReportCommand([
+    'async' => true,
     'someImportantData' => [ // data // ]
 ]))
 ```
