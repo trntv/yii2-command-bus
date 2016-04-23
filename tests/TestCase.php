@@ -3,16 +3,14 @@
 namespace trntv\bus\tests;
 
 use trntv\bus\CommandBus;
-use trntv\bus\console\CommandBusController;
 use yii\helpers\ArrayHelper;
-use yiiunit\TestCase as BaseTestCase;
 
 /**
  * Class TestCase
  * @package trntv\bus\tests
  * @author Eugene Terentev <eugene@terentev.net>
  */
-abstract class TestCase extends BaseTestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var CommandBus
@@ -28,7 +26,23 @@ abstract class TestCase extends BaseTestCase
     protected function mockApplication($config = [], $appClass = '\yii\console\Application')
     {
         $config = ArrayHelper::merge(require(__DIR__ . '/config.php'), $config);
-        parent::mockApplication($config, $appClass);
+        new $appClass(ArrayHelper::merge([
+            'id' => 'testapp',
+            'basePath' => __DIR__,
+            'vendorPath' => $this->getVendorPath(),
+        ], $config));
+    }
+
+    /**
+     * @return string
+     */
+    protected function getVendorPath()
+    {
+        $vendor = dirname(dirname(__DIR__)) . '/vendor';
+        if (!is_dir($vendor)) {
+            $vendor = dirname(dirname(dirname(dirname(__DIR__))));
+        }
+        return $vendor;
     }
 
     /**
