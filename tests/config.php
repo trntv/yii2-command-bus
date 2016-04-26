@@ -21,7 +21,7 @@ return [
                     'class' => '\trntv\bus\middlewares\BackgroundCommandMiddleware',
                     'backgroundHandlerPath' => __DIR__ . '/yii.php',
                     'backgroundHandlerRoute' => 'background-bus/handle',
-                    'backgroundProcessTimeout' => 3
+                    'backgroundProcessTimeout' => 5
                 ],
                 [
                     'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',

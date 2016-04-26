@@ -43,7 +43,7 @@ class BackgroundMiddlewareTest extends TestCase
     public function testBackgroundCommandTimeout() {
         $commandWithTimeout = new BackgroundTestCommand([
             'async' => true,
-            'sleep' => 4
+            'sleep' => 6
         ]);
         /** @var $process Process */
         $process = $this->commandBus->handle($commandWithTimeout);
