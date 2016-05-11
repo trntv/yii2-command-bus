@@ -20,6 +20,13 @@ class BackgroundMiddlewareTest extends TestCase
         $this->assertEquals('test ok', $process->getOutput());
     }
 
+    public function testBackgroundProcessArguments()
+    {
+        /** @var $process Process */
+        $process = $this->commandBus->handle(new BackgroundTestCommand());
+        $this->assertContains('-d foo=bar', $process->getCommandLine());
+        $this->assertContains('--interactive=0', $process->getCommandLine());
+    }
 
     public function testBackgroundAsyncCommand()
     {

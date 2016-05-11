@@ -36,9 +36,23 @@ class BackgroundCommandMiddleware extends Object implements Middleware
      */
     public $backgroundProcessIdleTimeout;
     /**
-     * @var array
+     * @var array Arguments that will be passed to script
      */
     public $backgroundHandlerArguments = [];
+    /**
+     * @var array Arguments that will be passed to binary
+     *
+     * ```php
+     *      'backgroundHandlerPath' => '/path/to/script.php',
+     *      'backgroundHandlerArguments' => ['--foo bar']
+     *      'backgroundHandlerBinaryArguments' => ['--define memory_limit=1G']
+     * ```
+     * will generate
+     * ```
+     * php --define memory_limit=1G /path/to/script.php --foo bar
+     * ```
+     */
+    public $backgroundHandlerBinaryArguments = [];
 
     public function execute($command, callable $next)
     {
@@ -60,8 +74,9 @@ class BackgroundCommandMiddleware extends Object implements Middleware
         $path = $this->getBackgroundHandlerPath();
         $route = $this->getBackgroundHandlerRoute();
         $arguments = implode(' ', $this->getBackgroundHandlerArguments($command));
+        $binaryArguments = implode(' ', $this->backgroundHandlerBinaryArguments);
 
-        $process = new Process("{$binary} {$path} {$route} {$arguments}");
+        $process = new Process("{$binary} {$binaryArguments} {$path} {$route} {$arguments}");
         $process->setTimeout($this->backgroundProcessTimeout);
         $process->setIdleTimeout($this->backgroundProcessIdleTimeout);
         if ($command->isAsync()) {
