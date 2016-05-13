@@ -43,8 +43,10 @@ class LoggingMiddleware extends Object implements Middleware
     {
         $class = get_class($command);
         Yii::getLogger()->log("Command execution started: {$class}", $this->level, $this->category);
+        Yii::getLogger()->flush($final = false);
         $result = $next($command);
         Yii::getLogger()->log("Command execution ended: {$class}", $this->level, $this->category);
+        Yii::getLogger()->flush($final = false);
         return $result;
     }
 }
