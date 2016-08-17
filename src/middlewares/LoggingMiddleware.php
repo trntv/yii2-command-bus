@@ -4,6 +4,7 @@ namespace trntv\bus\middlewares;
 
 use Yii;
 use yii\base\Object;
+use yii\di\Instance;
 use yii\log\Logger;
 use trntv\bus\interfaces\Middleware;
 
@@ -18,15 +19,18 @@ class LoggingMiddleware extends Object implements Middleware
      * @var integer log message level
      */
     public $level;
-
     /**
      * @var string log message category
      */
     public $category = 'command-bus';
     /**
-     * @var array|string|Logger Logger configuration
+     * @var string|array|callable|Logger Logger configuration
      */
-    public $logger = 'logger';
+    public $logger;
+    /**
+     * @var bool
+     */
+    public $forceFlush = false;
 
     /**
      * @return void
@@ -34,7 +38,11 @@ class LoggingMiddleware extends Object implements Middleware
      */
     public function init()
     {
-        $this->logger = Instance::ensure($this->logger);
+        if ($this->logger === null) {
+            $this->logger = Yii::getLogger();
+        } else {
+            $this->logger = Yii::createObject($this->logger);
+        }
         if (!$this->level) {
             $this->level = Logger::LEVEL_INFO;
         }
@@ -48,13 +56,15 @@ class LoggingMiddleware extends Object implements Middleware
     public function execute($command, callable $next)
     {
         $class = get_class($command);
-        Yii::getLogger()->log("Command execution started: {$class}", $this->level, $this->category);
-        Yii::getLogger()->flush($final = false);
         $this->logger->log("Command execution started: {$class}", $this->level, $this->category);
+        if ($this->forceFlush) {
+            $this->logger->flush($final = false);
+        }
         $result = $next($command);
-        Yii::getLogger()->log("Command execution ended: {$class}", $this->level, $this->category);
-        Yii::getLogger()->flush($final = false);
         $this->logger->log("Command execution ended: {$class}", $this->level, $this->category);
+        if ($this->forceFlush) {
+            $this->logger->flush($final = false);
+        }
         return $result;
     }
 }

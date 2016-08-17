@@ -12,12 +12,13 @@ services:
 before_install:
   - docker run -d -p 127.0.0.1:6379:6379 redis:3
   - docker ps -a
+  - composer config -g github-oauth.github.com $GITHUB_TOKEN
 
 install:
   - travis_retry composer self-update && composer --version
   - travis_retry composer global require "fxp/composer-asset-plugin"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - travis_retry composer install --prefer-dist --no-interaction
+  - travis_retry composer install --no-interaction
 
 script:
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS
