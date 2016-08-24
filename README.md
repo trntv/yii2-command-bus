@@ -158,7 +158,7 @@ Yii::$app->commandBus->handle($command)
 
 ### 4. Handlers
 Handlers are objects that will handle command execution
-There are to possible ways to execute command:
+There are two possible ways to execute command:
 #### 4.1 External handler 
 ```php
 return [
