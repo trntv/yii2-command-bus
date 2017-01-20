@@ -25,6 +25,7 @@
         "yiisoft/yii2-queue": "dev-master@dev"
     },
     "suggest": {
+        "ext-pcntl": "*",
         "symfony/process": "^3.0",
         "yiisoft/yii2-queue": "dev-master@dev"
     },

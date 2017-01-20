@@ -5,6 +5,7 @@ namespace trntv\bus\console;
 use trntv\bus\interfaces\QueuedCommand;
 use trntv\bus\CommandBus;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
@@ -46,6 +47,10 @@ class QueueBusController extends Controller
      * @var bool
      */
     public $end = false;
+    /**
+     * @var bool
+     */
+    public $dispatchSignal = false;
 
     /**
      * @param \yii\base\Action $action
@@ -122,7 +127,12 @@ class QueueBusController extends Controller
                 }
             }
 
-            pcntl_signal_dispatch();
+            if ($this->dispatchSignal) {
+                if (!extension_loaded('pcntl')) {
+                    throw new InvalidConfigException('pcntl extension should be installed');
+                }
+                pcntl_signal_dispatch();
+            }
         }
         $this->end();
     }
