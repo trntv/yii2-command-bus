@@ -42,6 +42,10 @@ class QueueBusController extends Controller
      * @var bool If "true" command will be removed from queue after has been picked up
      */
     public $forceDelete = false;
+    /**
+     * @var bool
+     */
+    public $end = false;
 
     /**
      * @param \yii\base\Action $action
@@ -75,7 +79,7 @@ class QueueBusController extends Controller
      */
     protected function loop($queueName)
     {
-        while(true) {
+        while(!$this->end) {
             $job = $this->queue->pop($queueName);
             $wasDeleted = false;
 
@@ -118,6 +122,7 @@ class QueueBusController extends Controller
                 }
             }
         }
+        $this->end();
     }
 
     /**
