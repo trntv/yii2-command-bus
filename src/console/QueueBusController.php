@@ -121,6 +121,8 @@ class QueueBusController extends Controller
                     $this->end();
                 }
             }
+
+            pcntl_signal_dispatch();
         }
         $this->end();
     }
