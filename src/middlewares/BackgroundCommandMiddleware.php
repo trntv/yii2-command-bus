@@ -97,8 +97,8 @@ class BackgroundCommandMiddleware extends Object implements Middleware
         if ($this->backgroundHandlerBinary) {
             $binary = $this->backgroundHandlerBinary;
         } elseif (defined('PHP_BINARY') && PHP_BINARY != '' && dirname(PHP_BINARY) == PHP_BINDIR) {
-			$binary = PHP_BINARY;
-		} else {
+            $binary = PHP_BINARY;
+        } else {
             $environmentPaths = explode(PATH_SEPARATOR, getenv('PATH'));
             $environmentPaths[] = PHP_BINDIR;
             foreach ($environmentPaths as $path) {
@@ -110,28 +110,29 @@ class BackgroundCommandMiddleware extends Object implements Middleware
                 $binary = $this->checkPhpBinary($binary) ? $binary : '';
             }
         }
-        
-        return Yii::getAlias($binary);
+
+        return isset($binary) ? Yii::getAlias($binary) : '';
     }
-    
+
     /**
-	 * Checks if the given PHP binary is executable and of the same version as the currently running one.
-	 *
-	 * @param string $binary
+     * Checks if the given PHP binary is executable and of the same version as the currently running one.
+     *
+     * @param string $binary
      *
      * @return bool
-	 */
-	protected function checkPhpBinary($binary) {
-		$phpVersion = NULL;
-		if (file_exists($binary) && is_file($binary)) {
-			$phpVersion = trim(exec(escapeshellcmd($binary) . ' -r "echo PHP_VERSION;"'));
-			if ($phpVersion === PHP_VERSION) {
-				return true;
-			}
-		}
-        
+     */
+    protected function checkPhpBinary($binary)
+    {
+        $phpVersion = null;
+        if (file_exists($binary) && is_file($binary)) {
+            $phpVersion = trim(exec(escapeshellcmd($binary) . ' -r "echo PHP_VERSION;"'));
+            if ($phpVersion === PHP_VERSION) {
+                return true;
+            }
+        }
+
         return false;
-	}
+    }
 
     /**
      * @return bool|string
