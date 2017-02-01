@@ -93,9 +93,45 @@ class BackgroundCommandMiddleware extends Object implements Middleware
      */
     public function getBackgroundHandlerBinary()
     {
-        $binary = $this->backgroundHandlerBinary ?: PHP_BINARY;
+        // Only return PHP_BINARY if it's set and it's in PHP_BINDIR
+        if ($this->backgroundHandlerBinary) {
+            $binary = $this->backgroundHandlerBinary;
+        } elseif (defined('PHP_BINARY') && PHP_BINARY != '' && dirname(PHP_BINARY) == PHP_BINDIR) {
+			$binary = PHP_BINARY;
+		} else {
+            $environmentPaths = explode(PATH_SEPARATOR, getenv('PATH'));
+            $environmentPaths[] = PHP_BINDIR;
+            foreach ($environmentPaths as $path) {
+                $path = rtrim(str_replace('\\', '/', $path), '/');
+                if (strlen($path) == 0) {
+                    continue;
+                }
+                $binary = $path . '/php' . (DIRECTORY_SEPARATOR !== '/' ? '.exe' : '');
+                $binary = $this->checkPhpBinary($binary) ? $binary : '';
+            }
+        }
+        
         return Yii::getAlias($binary);
     }
+    
+    /**
+	 * Checks if the given PHP binary is executable and of the same version as the currently running one.
+	 *
+	 * @param string $binary
+     *
+     * @return bool
+	 */
+	protected function checkPhpBinary($binary) {
+		$phpVersion = NULL;
+		if (file_exists($binary) && is_file($binary)) {
+			$phpVersion = trim(exec(escapeshellcmd($binary) . ' -r "echo PHP_VERSION;"'));
+			if ($phpVersion === PHP_VERSION) {
+				return true;
+			}
+		}
+        
+        return false;
+	}
 
     /**
      * @return bool|string
