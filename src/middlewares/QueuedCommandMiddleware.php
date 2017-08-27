@@ -6,7 +6,7 @@ use trntv\bus\interfaces\Middleware;
 use trntv\bus\interfaces\QueuedCommand;
 use yii\base\Object;
 use yii\di\Instance;
-use yii\queue\QueueInterface;
+use yii\queue\Queue;
 
 /**
  * Class QueuedCommandMiddleware
@@ -16,59 +16,48 @@ use yii\queue\QueueInterface;
 class QueuedCommandMiddleware extends Object implements Middleware
 {
     /**
-     * @var mixed|QueueInterface
+     * @var mixed|Queue
      */
     public $queue = 'queue';
 
-    /**
-     * @var array
-     */
-    public $serializer = ['serialize', 'unserialize'];
-    /**
-     * @var string
-     */
-    public $defaultQueueName;
     /**
      * @var int Default delay for all commands
      */
     public $delay = 0;
 
     /**
+     * @param string|array Command bus component name or configuration array
+     * compatible with Yii's createObject() method
+     */
+    public $commandBus;
+
+    /**
      * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
-        $this->queue = Instance::ensure($this->queue, 'yii\queue\QueueInterface');
+        $this->queue = Instance::ensure($this->queue, Queue::class);
     }
 
     /**
      * @param $command
      * @param callable $next
+     *
      * @return string
      */
     public function execute($command, callable $next)
     {
-        if ($command instanceof QueuedCommand && !$command->isRunningInQueue()) {
-
-            $queueName = $command->getQueueName();
+        if ($command instanceof QueuedCommand && !$command->isRunningInQueue())
+        {
             $delay = $command->getDelay() !== null ?: $this->delay;
-            
-            if (!$queueName) {
-                if ($this->defaultQueueName) {
-                    $queueName = $this->defaultQueueName;
-                } else {
-                    $queueName = get_class($command);
-                }
-            }
 
-            return $this->queue->push(
-                [
-                    'serializer' => $this->serializer,
-                    'object' => call_user_func($this->serializer[0], $command)
-                ],
-                $queueName,
-                $delay
-            );
+            $command->setRunningInQueue(true);
+            $job = new QueuedJobWrapper([
+                'command' => $command,
+                'commandBus' => $this->commandBus
+            ]);
+
+            return $this->queue->delay($delay)->push($job);
         }
 
         return $next($command);

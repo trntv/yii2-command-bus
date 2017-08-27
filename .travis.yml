@@ -1,17 +1,13 @@
 sudo: required
 language: php
 group: edge
+dist: trusty
 php:
   - 5.6
-  - 7.0
+  - 7.1
   - hhvm
 
-services:
-  - docker
-
 before_install:
-  - docker run -d -p 127.0.0.1:6379:6379 redis:3
-  - docker ps -a
   - composer config -g github-oauth.github.com $GITHUB_TOKEN
 
 install:

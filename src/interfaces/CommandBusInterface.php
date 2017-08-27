@@ -2,7 +2,7 @@
 
 namespace trntv\bus\interfaces;
 
-interface CommandBus
+interface CommandBusInterface
 {
     /**
      * @param $command

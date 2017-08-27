@@ -1,37 +1,42 @@
 {
-    "name": "trntv/yii2-command-bus",
-    "description": "Yii2 Command Bus extension",
-    "keywords": ["yii2", "redis", "active-record", "cache", "session"],
-    "type": "yii2-extension",
-    "license": "BSD-3-Clause",
-    "support": {
-      "issues": "https://github.com/trntv/yii2-command-bus/issues",
-      "source": "https://github.com/trntv/yii2-command-bus"
-    },
-    "authors": [
-        {
-            "name": "Eugene Terentev",
-            "email": "eugene@terentev.net"
-        }
-    ],
-    "require": {
-        "yiisoft/yii2": "^2.0"
-    },
-    "require-dev": {
-        "yiisoft/yii2-dev": "^2.0",
-        "phpunit/phpunit": "^4.8",
-        "predis/predis": "^1.0",
-        "symfony/process": "^3.0",
-        "yiisoft/yii2-queue": "dev-master@dev"
-    },
-    "suggest": {
-        "ext-pcntl": "*",
-        "symfony/process": "^3.0",
-        "yiisoft/yii2-queue": "dev-master@dev"
-    },
-    "autoload": {
-        "psr-4": {
-            "trntv\\bus\\": "src/"
-        }
+  "name": "trntv/yii2-command-bus",
+  "description": "Yii2 Command Bus extension",
+  "keywords": [
+    "yii2",
+    "extension",
+    "command bus",
+    "queue"
+  ],
+  "type": "yii2-extension",
+  "license": "BSD-3-Clause",
+  "support": {
+    "issues": "https://github.com/trntv/yii2-command-bus/issues",
+    "source": "https://github.com/trntv/yii2-command-bus"
+  },
+  "minimum-stability": "stable",
+  "authors": [
+    {
+      "name": "Eugene Terentev",
+      "email": "eugene@terentev.net"
     }
+  ],
+  "require": {
+    "yiisoft/yii2": "^2.0",
+    "yiisoft/yii2-queue": "^2.0"
+  },
+  "suggest": {
+    "symfony/process": "^3.0",
+    "yiisoft/yii2-queue": "^2.0"
+  },
+  "require-dev": {
+    "yiisoft/yii2-dev": "^2.0",
+    "phpunit/phpunit": "^4.8",
+    "predis/predis": "^1.0",
+    "symfony/process": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "trntv\\bus\\": "src/"
+    }
+  }
 }

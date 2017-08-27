@@ -4,7 +4,6 @@ namespace trntv\bus\middlewares;
 
 use Yii;
 use yii\base\Object;
-use yii\di\Instance;
 use yii\log\Logger;
 use trntv\bus\interfaces\Middleware;
 
@@ -49,8 +48,9 @@ class LoggingMiddleware extends Object implements Middleware
     }
 
     /**
-     * @param $command
-     * @param callable $next
+     * @param            $command
+     * @param callable   $next
+     *
      * @return mixed
      */
     public function execute($command, callable $next)

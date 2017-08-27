@@ -2,10 +2,8 @@
 
 namespace trntv\bus\tests\data;
 
-use trntv\bus\interfaces\Command;
 use trntv\bus\interfaces\Middleware;
 use yii\base\Object;
-
 
 /**
  * Class TestMiddleware

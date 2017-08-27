@@ -15,11 +15,10 @@ use yii\base\Object;
 class QueuedTestCommand extends Object implements SelfHandlingCommand, QueuedCommand
 {
     use QueuedCommandTrait;
-    
-    public $delay = 10;
 
     public function handle($command)
     {
+        \file_put_contents(\Yii::getAlias('@runtime/test.lock'), __CLASS__);
         return true;
     }
 }

@@ -96,26 +96,18 @@ Yii::$app->commandBus->handle(new ReportCommand([
 ```
 
 ### 3. Queued commands support (optional)
-Install required package:
+#### 3.1 Install required package:
 
 ```
-php composer.phar require yiisoft/yii2-queue:dev-master@dev
+php composer.phar require yiisoft/yii2-queue
 ```
-
-If you need commands to be run in queue, you need to set middleware, 
-queue component and queue listener in your config.
-
-For example, queue using Redis
+#### 3.2 Configure extensions
+If you need commands to be run in queue, you need to setup middleware and yii2-queue extensions.
 
 ```php
 'components' => [
     'queue' => [
-        'class' => 'yii\queue\RedisQueue',
-        'redis' => [
-            'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
-            'port'   => '6379',
-        ]
+        // queue config
     ],
     
     'commandBus' =>[
@@ -123,36 +115,29 @@ For example, queue using Redis
         'middlewares' => [
             [
                 'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',
-                // 'defaultQueueName' => 'commands-queue', // You can set default queue name
                 // 'delay' => 3, // You can set default delay for all commands here
             ]                
         ]
         ...            
     ]     
-],
-'controllerMap' => [
-    'queue-bus' => [
-        'class' => '\trntv\bus\console\QueueBusController'
-    ]
 ]
 ```
-then run console command to listen queue:
-
-```
-php yii queue-bus/listen some-queue-name
-```
-Create and handle command
+More information about yii2-queue config can be found [here](https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/usage.md)
+#### 3.4 Run queue worker 
+``yii queue/listen``
+More information [here](https://github.com/yiisoft/yii2-queue/blob/master/docs/guide/worker.md#worker-starting-control) 
+#### 3.5 Create and run command
 ```php
-class HeavyComputationsCommand extends Object implements QueuedCommand
+class HeavyComputationsCommand extends Object implements QueuedCommand, SelfHandlingCommand
 {
     use QueuedCommandTrait;
-    public $queueName = 'you-can-change-queue-name-here';
-    public $delay = 5; // Command will be delayed for 5 seconds
+    
+    public function handle() {
+        // do work here
+    }
 }
 
-$command = new ReportCommand([
-    'delay' => 7, // You can change delay here
-])
+$command = new HeavyComputationsCommand();
 Yii::$app->commandBus->handle($command)
 ```
 

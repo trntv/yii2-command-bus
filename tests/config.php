@@ -26,8 +26,7 @@ return [
                     'backgroundProcessTimeout' => 5
                 ],
                 [
-                    'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware',
-                    'defaultQueueName' => 'test-commands-queue'
+                    'class' => '\trntv\bus\middlewares\QueuedCommandMiddleware'
                 ],
                 [
                     'class' => '\trntv\bus\middlewares\LoggingMiddleware',
@@ -36,12 +35,8 @@ return [
             ],
         ],
         'queue' => [
-            'class' => 'yii\queue\RedisQueue',
-            'redis' => [
-                'scheme' => 'tcp',
-                'host'   => '127.0.0.1',
-                'port'   => '6379',
-            ]
+            'class' => '\yii\queue\file\Queue',
+            'path' => '@runtime/queue'
         ],
     ]
 ];

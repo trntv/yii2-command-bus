@@ -2,13 +2,10 @@
 
 namespace trntv\bus\locators;
 
-use trntv\bus\CommandBus;
-use trntv\bus\interfaces\Command;
 use trntv\bus\interfaces\Handler;
 use trntv\bus\interfaces\HandlerLocator;
 use yii\base\Object;
 use yii\di\Instance;
-
 
 /**
  * Class ClassNameLocator
@@ -33,7 +30,7 @@ class ClassNameLocator extends Object implements HandlerLocator
         $className = get_class($command);
 
         if (array_key_exists($className, $this->handlers)) {
-            return Instance::ensure($this->handlers[$className], 'trntv\bus\interfaces\Handler');
+            return Instance::ensure($this->handlers[$className], Handler::class);
         }
 
         return false;

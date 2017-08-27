@@ -11,17 +11,14 @@ namespace trntv\bus\middlewares;
 trait QueuedCommandTrait
 {
     /**
+     * @var int
+     */
+    protected $delay;
+
+    /**
      * @var bool
      */
     protected $runningInQueue = false;
-
-    /**
-     * @param mixed $queueName
-     */
-    public function setQueueName($queueName)
-    {
-        $this->queueName = $queueName;
-    }
 
     /**
      * @return boolean
@@ -34,21 +31,9 @@ trait QueuedCommandTrait
     /**
      * @param boolean $runningInQueue
      */
-    public function setRunningInQueue($runningInQueue)
+    public function setRunningInQueue($runningInQueue = true)
     {
         $this->runningInQueue = $runningInQueue;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getQueueName()
-    {
-        $queueName = null;
-        if (property_exists(get_called_class(), 'queueName') && $this->queueName) {
-            $queueName = $this->queueName;
-        }
-        return $queueName;
     }
 
     /**
@@ -56,10 +41,16 @@ trait QueuedCommandTrait
      */
     public function getDelay()
     {
-        $delay = null;
-        if (property_exists(get_called_class(), 'delay')) {
-            $delay = $this->delay;
-        }
-        return $delay;
+        return $this->delay;
+    }
+
+    /**
+     * @param int|null $delay
+     *
+     * @return void
+     */
+    public function setDelay($delay)
+    {
+        $this->delay = $delay;
     }
 }

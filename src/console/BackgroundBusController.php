@@ -26,7 +26,7 @@ class BackgroundBusController extends Controller
      */
     public function beforeAction($action)
     {
-        $this->commandBus = Instance::ensure($this->commandBus, '\trntv\bus\CommandBus');
+        $this->commandBus = Instance::ensure($this->commandBus, CommandBus::class);
         return parent::beforeAction($action);
     }
 

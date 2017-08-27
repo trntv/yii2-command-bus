@@ -2,10 +2,10 @@
 
 namespace trntv\bus;
 
+use trntv\bus\interfaces\CommandBusInterface;
 use trntv\bus\interfaces\HandlerLocator;
 use trntv\bus\interfaces\Middleware;
 use trntv\bus\interfaces\SelfHandlingCommand;
-use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
@@ -15,7 +15,7 @@ use trntv\bus\exceptions\MissingHandlerException;
  * Class CommandBus
  * @package trntv\bus
  */
-class CommandBus extends Component implements interfaces\CommandBus
+class CommandBus extends Component implements CommandBusInterface
 {
     /**
      * @var HandlerLocator|null
@@ -32,7 +32,7 @@ class CommandBus extends Component implements interfaces\CommandBus
     public function init()
     {
         if ($this->locator) {
-            $this->locator = Instance::ensure($this->locator, 'trntv\bus\interfaces\HandlerLocator');
+            $this->locator = Instance::ensure($this->locator, HandlerLocator::class);
         }
         parent::init();
     }

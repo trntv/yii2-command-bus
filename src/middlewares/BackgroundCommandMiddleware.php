@@ -54,6 +54,12 @@ class BackgroundCommandMiddleware extends Object implements Middleware
      */
     public $backgroundHandlerBinaryArguments = [];
 
+    /**
+     * @param            $command
+     * @param callable   $next
+     *
+     * @return string
+     */
     public function execute($command, callable $next)
     {
 

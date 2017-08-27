@@ -2,7 +2,6 @@
 
 namespace trntv\bus\interfaces;
 
-
 /**
  * Interface Middleware
  *
@@ -10,5 +9,11 @@ namespace trntv\bus\interfaces;
  */
 interface Middleware
 {
+    /**
+     * @param            $command
+     * @param callable   $next
+     *
+     * @return mixed
+     */
     public function execute($command, callable $next);
 }

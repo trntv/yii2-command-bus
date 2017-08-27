@@ -2,7 +2,6 @@
 
 namespace trntv\bus\middlewares;
 
-
 /**
  * Class BackgroundCommandTrait
  *

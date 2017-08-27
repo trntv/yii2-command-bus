@@ -15,11 +15,6 @@ interface QueuedCommand
     public function isRunningInQueue();
 
     /**
-     * @return string
-     */
-    public function getQueueName();
-    
-    /**
      * @return int
      */
     public function getDelay();

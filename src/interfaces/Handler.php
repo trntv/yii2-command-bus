@@ -9,5 +9,9 @@ namespace trntv\bus\interfaces;
  */
 interface Handler
 {
+    /**
+     * @param $command
+     * @return mixed
+     */
     public function handle($command);
 }
