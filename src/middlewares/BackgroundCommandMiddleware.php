@@ -1,6 +1,6 @@
 <?php
 
-namespace Mpirogov\bus\middlewares;
+namespace trntv\bus\middlewares;
 
 use Symfony\Component\Process\Process;
 use trntv\bus\interfaces\BackgroundCommand;
