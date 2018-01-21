@@ -6,14 +6,14 @@ use Symfony\Component\Process\Process;
 use trntv\bus\interfaces\BackgroundCommand;
 use trntv\bus\interfaces\Middleware;
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Class BackgroundCommandMiddleware
  * @package trntv\bus\middlewares
  * @author Eugene Terentev <eugene@terentev.net>
  */
-class BackgroundCommandMiddleware extends Object implements Middleware
+class BackgroundCommandMiddleware extends BaseObject implements Middleware
 {
     /**
      * @var string Path to php executable
