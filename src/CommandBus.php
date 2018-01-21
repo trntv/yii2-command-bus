@@ -40,6 +40,8 @@ class CommandBus extends Component implements CommandBusInterface
     /**
      * @param $command
      * @return mixed
+     * @throws InvalidConfigException
+     * @throws MissingHandlerException
      */
     public function handle($command)
     {
@@ -52,6 +54,7 @@ class CommandBus extends Component implements CommandBusInterface
      * @param array $middlewareList
      * @return \Closure
      * @throws InvalidConfigException
+     * @throws MissingHandlerException
      */
     protected function createMiddlewareChain($command, array $middlewareList) {
 
@@ -103,6 +106,7 @@ class CommandBus extends Component implements CommandBusInterface
 
     /**
      * @param array $middlewares
+     * @throws InvalidConfigException
      */
     public function setMiddlewares($middlewares)
     {

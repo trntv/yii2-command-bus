@@ -3,15 +3,15 @@
 namespace trntv\bus\middlewares;
 
 use trntv\bus\CommandBus;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\di\Instance;
-use yii\queue\Job;
+use yii\queue\JobInterface;
 use yii\queue\Queue;
 
 /**
  *
  */
-class QueuedJobWrapper extends Object implements Job
+class QueuedJobWrapper extends BaseObject implements JobInterface
 {
     /**
      * @var mixed
@@ -25,6 +25,7 @@ class QueuedJobWrapper extends Object implements Job
 
     /**
      * @param Queue $queue
+     * @throws \yii\base\InvalidConfigException
      */
     public function execute($queue)
     {

@@ -3,7 +3,7 @@
 namespace trntv\bus\middlewares;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\log\Logger;
 use trntv\bus\interfaces\Middleware;
 
@@ -12,7 +12,7 @@ use trntv\bus\interfaces\Middleware;
  * @package trntv\bus\middlewares
  * @author Eugene Terentev <eugene@terentev.net>
  */
-class LoggingMiddleware extends Object implements Middleware
+class LoggingMiddleware extends BaseObject implements Middleware
 {
     /**
      * @var integer log message level

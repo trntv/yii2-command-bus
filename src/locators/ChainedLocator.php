@@ -3,7 +3,7 @@
 namespace trntv\bus\locators;
 
 use trntv\bus\interfaces\HandlerLocator;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\di\Instance;
 
 /**
@@ -11,7 +11,7 @@ use yii\di\Instance;
  * @package trntv\bus\base
  * @author Eugene Terentev <eugene@terentev.net>
  */
-class ChainedLocator extends Object implements HandlerLocator
+class ChainedLocator extends BaseObject implements HandlerLocator
 {
     /**
      * @var array|HandlerLocator[]

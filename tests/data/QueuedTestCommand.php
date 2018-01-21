@@ -5,14 +5,14 @@ namespace trntv\bus\tests\data;
 use trntv\bus\interfaces\QueuedCommand;
 use trntv\bus\interfaces\SelfHandlingCommand;
 use trntv\bus\middlewares\QueuedCommandTrait;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * Class QueuedTestCommand
  * @package trntv\bus\tests\data
  * @author Eugene Terentev <eugene@terentev.net>
  */
-class QueuedTestCommand extends Object implements SelfHandlingCommand, QueuedCommand
+class QueuedTestCommand extends BaseObject implements SelfHandlingCommand, QueuedCommand
 {
     use QueuedCommandTrait;
 

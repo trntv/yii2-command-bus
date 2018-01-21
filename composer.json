@@ -38,5 +38,11 @@
     "psr-4": {
       "trntv\\bus\\": "src/"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
 }
