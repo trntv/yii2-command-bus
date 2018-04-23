@@ -17,7 +17,7 @@ class QueuedMiddlewareTest extends TestCase
 
         /** @var \yii\queue\file\Queue $queue */
         $queue = \Yii::$app->get('queue');
-        $queue->run();
+        $queue->run(false);
 
         $this->assertStringEqualsFile(\Yii::getAlias('@runtime/test.lock'), QueuedTestCommand::class);
     }
